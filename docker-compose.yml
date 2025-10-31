@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: pulsecart-postgres
+    environment:
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: ecommerce
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pulsecart-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: pulsecart-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - pulsecart-network
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: pulsecart-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI
+    networks:
+      - pulsecart-network
+
+volumes:
+  postgres_data:
+
+networks:
+  pulsecart-network:
+    driver: bridge

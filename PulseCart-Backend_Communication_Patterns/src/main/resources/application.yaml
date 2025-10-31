@@ -1,3 +1,70 @@
+migration:
+  enabled: true
+
 spring:
-  application:
-    name: PulseCart-Backend_Communication_Patterns
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    clean-disabled: false
+    # Uncomment next line if you get checksum mismatch errors
+    # validate-on-migrate: false
+
+  # Disable Session and Reactive Redis for now
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
+      - org.springframework.boot.autoconfigure.session.SessionAutoConfiguration
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecommerce
+    username: ecommerce
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  # Redis enabled for atomic stock operations
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: -1ms
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000
+
+  # RabbitMQ enabled for async messaging
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    connection-timeout: 10000
+    listener:
+      simple:
+        acknowledge-mode: auto
+        prefetch: 10
+        concurrency: 5
+        max-concurrency: 20
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
