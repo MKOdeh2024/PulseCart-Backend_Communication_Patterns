@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: PulseCart-Backend_Communication_Patterns
