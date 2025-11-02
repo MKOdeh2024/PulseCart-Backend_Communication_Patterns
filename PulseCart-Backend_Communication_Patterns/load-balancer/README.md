@@ -10,9 +10,9 @@ This directory contains load balancer configurations for distributing traffic ac
 - **Features**: Health checks, rate limiting, SSL termination
 
 ### 2. HAProxy (Alternative)
-- **File**: `haproxy.cfg` (to be created)
-- **Algorithm**: Similar load balancing strategies
-- **Features**: Advanced health checks, stickiness, SSL
+- **File**: `haproxy.cfg`
+- **Algorithm**: Round-robin for sync, least connections for async
+- **Features**: Advanced health checks, rate limiting, SSL, statistics dashboard
 
 ## Architecture
 
@@ -69,12 +69,27 @@ sudo systemctl reload nginx
 ```yaml
 version: '3.8'
 services:
-  loadbalancer:
+  # nginx Load Balancer
+  nginx-lb:
     image: nginx:alpine
     ports:
       - "80:80"
     volumes:
       - ./load-balancer/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app1
+      - app2
+      - app3
+
+  # HAProxy Load Balancer (alternative)
+  haproxy-lb:
+    image: haproxy:alpine
+    ports:
+      - "81:80"  # Sync frontend
+      - "82:81"  # Async frontend
+      - "8080:8080"  # Stats page
+    volumes:
+      - ./load-balancer/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     depends_on:
       - app1
       - app2
@@ -103,8 +118,9 @@ services:
 - **Connection counts** per instance
 
 ### Health Endpoints
-- **Load balancer**: `http://localhost/health`
+- **nginx load balancer**: `http://localhost/health`
 - **nginx status**: `http://localhost:8080/nginx_status`
+- **HAProxy stats**: `http://localhost:8080/stats` (admin/admin)
 - **Application instances**: `http://localhost:8080/actuator/health`
 
 ## Scaling Strategy
