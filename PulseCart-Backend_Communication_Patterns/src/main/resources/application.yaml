@@ -17,7 +17,7 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/ecommerce
-    username: ecommerce
+    username: PulseCart
     password: root
     driver-class-name: org.postgresql.Driver
 

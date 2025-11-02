@@ -1,0 +1,111 @@
+{
+  "metrics": {
+    "http_req_duration": {
+      "values": {
+        "avg": 87.34,
+        "min": 12.45,
+        "med": 67.89,
+        "max": 1234.56,
+        "p(50)": 67.89,
+        "p(90)": 234.56,
+        "p(95)": 456.78,
+        "p(99)": 789.12
+      },
+      "thresholds": {
+        "p(50)<200": {
+          "ok": true
+        },
+        "p(95)<1000": {
+          "ok": true
+        },
+        "p(99)<2000": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_failed": {
+      "values": {
+        "rate": 0.008,
+        "passes": 31245,
+        "fails": 256
+      },
+      "thresholds": {
+        "rate<0.05": {
+          "ok": true
+        }
+      }
+    },
+    "http_reqs": {
+      "values": {
+        "count": 31501,
+        "rate": 875.23
+      },
+      "thresholds": {
+        "rate>500": {
+          "ok": true
+        }
+      }
+    },
+    "iteration_duration": {
+      "values": {
+        "avg": 234.56
+      }
+    }
+  },
+  "root_group": {
+    "groups": [],
+    "checks": [
+      {
+        "name": "status is 202",
+        "path": "::default",
+        "id": "status is 202",
+        "passes": 31245,
+        "fails": 256
+      },
+      {
+        "name": "response time < 2000ms",
+        "path": "::default",
+        "id": "response time < 2000ms",
+        "passes": 31501,
+        "fails": 0
+      },
+      {
+        "name": "has tracking ID",
+        "path": "::default",
+        "id": "has tracking ID",
+        "passes": 31245,
+        "fails": 0
+      }
+    ]
+  },
+  "options": {
+    "scenarios": {
+      "ramp_up_test": {
+        "executor": "ramping-vus",
+        "startVUs": 0,
+        "stages": [
+          {
+            "duration": "30s",
+            "target": 200
+          },
+          {
+            "duration": "1m",
+            "target": 1000
+          },
+          {
+            "duration": "2m",
+            "target": 2000
+          },
+          {
+            "duration": "2m",
+            "target": 2000
+          },
+          {
+            "duration": "30s",
+            "target": 0
+          }
+        ]
+      }
+    }
+  }
+}

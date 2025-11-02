@@ -2,6 +2,7 @@ package com.example.flashsale.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
  * Sets up queues, exchanges, and bindings for async purchase processing
  */
 @Configuration
+@EnableRabbit
 @Slf4j
 public class RabbitMQConfig {
 

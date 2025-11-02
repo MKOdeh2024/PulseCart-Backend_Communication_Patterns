@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Data seeder to initialize flash sale products for testing
@@ -50,6 +51,10 @@ public class DataSeeder {
             iphone.setName("iPhone 15 Pro - Flash Sale");
             iphone.setStockQuantity(1000);
             iphone.setPrice(new BigDecimal("999.99"));
+            if (Objects.isNull(iphone.getStockQuantity())){
+                int stockQuantity = 100;
+                iphone.setStockQuantity(stockQuantity);
+            }
             iphone = productRepository.save(iphone);
             inventoryService.initializeStock(iphone.getId());
             log.info("Created product: {} with stock: {}", iphone.getName(), iphone.getStockQuantity());

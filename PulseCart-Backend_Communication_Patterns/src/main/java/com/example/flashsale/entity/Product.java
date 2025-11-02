@@ -1,6 +1,7 @@
 package com.example.flashsale.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ public class Product {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(name = "stockquantity", nullable = false)
+    @Column(name = "stock_quantity", nullable = false)
+    @NotNull
     private Integer stockQuantity;
 
     @Column(precision = 10, scale = 2)

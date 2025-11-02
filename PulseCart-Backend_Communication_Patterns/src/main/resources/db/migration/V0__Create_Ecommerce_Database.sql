@@ -1,11 +1,4 @@
-DO $$ 
-BEGIN
-   IF NOT EXISTS (
-      SELECT 
-      FROM   pg_catalog.pg_database 
-      WHERE  datname = 'ecommerce') THEN
-      
-      CREATE DATABASE ecommerce;
-   END IF;
-END
-$$;
+-- Create database only if it does not exist
+CREATE ROLE PulseCart LOGIN PASSWORD 'root';
+CREATE SCHEMA IF NOT EXISTS ecommerce;
+ALTER SCHEMA ecommerce OWNER TO PulseCart;

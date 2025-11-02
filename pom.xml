@@ -33,8 +33,7 @@
     <spring-cloud.version>2025.0.0</spring-cloud.version>
   </properties>
   <modules>
-    <module>src/approach-sync</module>
-    <module>src/approach-async</module>
+    <module>PulseCart-Backend_Communication_Patterns</module>
   </modules>
   <dependencies>
     <dependency>

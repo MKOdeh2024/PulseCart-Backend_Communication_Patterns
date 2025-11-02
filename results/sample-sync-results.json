@@ -1,0 +1,104 @@
+{
+  "metrics": {
+    "http_req_duration": {
+      "values": {
+        "avg": 245.67,
+        "min": 45.23,
+        "med": 189.45,
+        "max": 3456.78,
+        "p(50)": 189.45,
+        "p(90)": 567.89,
+        "p(95)": 1234.56,
+        "p(99)": 2345.67
+      },
+      "thresholds": {
+        "p(50)<500": {
+          "ok": true
+        },
+        "p(95)<2000": {
+          "ok": true
+        },
+        "p(99)<5000": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_failed": {
+      "values": {
+        "rate": 0.023,
+        "passes": 15432,
+        "fails": 345
+      },
+      "thresholds": {
+        "rate<0.1": {
+          "ok": true
+        }
+      }
+    },
+    "http_reqs": {
+      "values": {
+        "count": 15777,
+        "rate": 87.65
+      },
+      "thresholds": {
+        "rate>50": {
+          "ok": true
+        }
+      }
+    },
+    "iteration_duration": {
+      "values": {
+        "avg": 1234.56
+      }
+    }
+  },
+  "root_group": {
+    "groups": [],
+    "checks": [
+      {
+        "name": "status is 200 or 409",
+        "path": "::default",
+        "id": "status is 200 or 409",
+        "passes": 15432,
+        "fails": 345
+      },
+      {
+        "name": "response time < 5000ms",
+        "path": "::default",
+        "id": "response time < 5000ms",
+        "passes": 15777,
+        "fails": 0
+      }
+    ]
+  },
+  "options": {
+    "scenarios": {
+      "ramp_up_test": {
+        "executor": "ramping-vus",
+        "startVUs": 0,
+        "stages": [
+          {
+            "duration": "30s",
+            "target": 100
+          },
+          {
+            "duration": "1m",
+            "target": 500
+          },
+          {
+            "duration": "2m",
+            "target": 1000
+          },
+          {
+            "duration": "1m",
+            "target": 1000
+          },
+          {
+            "duration": "30s",
+            "target": 0
+          }
+        ]
+      }
+    }
+  }
+}
