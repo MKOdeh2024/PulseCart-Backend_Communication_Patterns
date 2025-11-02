@@ -204,17 +204,106 @@ RabbitMQ Queue → PurchaseMessageConsumer
 
 The system is designed to handle 10,000+ concurrent requests. Load testing scripts are available in the `tests/` directory.
 
-### Running Load Tests
+### Prerequisites for Load Testing
 ```bash
 # Install k6 (load testing tool)
 # https://k6.io/docs/get-started/installation/
 
-# Run sync approach test
-k6 run tests/load-test-sync.js
+# For Windows (using Chocolatey)
+choco install k6
 
-# Run async approach test
-k6 run tests/load-test-async.js
+# For macOS (using Homebrew)
+brew install k6
+
+# For Linux
+sudo apt update
+sudo apt install k6
 ```
+
+### Running Load Tests
+
+#### Option 1: Test with Load Balancers (Recommended)
+```bash
+# Start full infrastructure with load balancers
+docker-compose up --build -d
+
+# Wait for all services to be healthy
+docker-compose ps
+
+# Test HAProxy load balancer (port 80)
+k6 run -e BASE_URL=http://localhost tests/load-test-sync.js
+k6 run -e BASE_URL=http://localhost tests/load-test-async.js
+
+# Test nginx load balancer (port 81)
+k6 run -e BASE_URL=http://localhost:81 tests/load-test-sync.js
+k6 run -e BASE_URL=http://localhost:81 tests/load-test-async.js
+```
+
+#### Option 2: Test Single Instance (Development)
+```bash
+# Start only infrastructure services
+docker-compose up -d postgres redis rabbitmq
+
+# Run application locally
+./mvnw spring-boot:run
+
+# Test local instance
+k6 run -e BASE_URL=http://localhost:8080 tests/load-test-sync.js
+k6 run -e BASE_URL=http://localhost:8080 tests/load-test-async.js
+```
+
+### Load Test Scenarios
+
+#### Synchronous Tests (`load-test-sync.js`)
+- **Ramp-up test:** 0 → 100 → 500 → 1000 users over 5 minutes
+- **Constant load:** 50 users for 5 minutes
+- **Metrics:** Response time, success rate, throughput
+- **Thresholds:** p95 < 2s, success rate > 95%
+
+#### Asynchronous Tests (`load-test-async.js`)
+- **Ramp-up test:** 0 → 200 → 1000 → 2000 users over 5 minutes
+- **Burst test:** 100 users for 2 minutes
+- **Metrics:** Acceptance rate, response time, queue processing
+- **Thresholds:** p95 < 500ms, acceptance rate > 99%
+
+### Analyzing Results
+
+```bash
+# Results are displayed in console and can be exported
+k6 run --out json=results/sync-results.json tests/load-test-sync.js
+k6 run --out json=results/async-results.json tests/load-test-async.js
+
+# View results in browser
+# Open results/sample-sync-results.json
+# Open results/sample-async-results.json
+```
+
+### Key Metrics to Monitor
+
+#### Performance Metrics
+- **Response Time:** p50, p95, p99 percentiles
+- **Throughput:** Requests per second
+- **Error Rate:** HTTP 4xx/5xx responses
+
+#### System Resources
+```bash
+# Monitor Docker containers
+docker stats
+
+# Check application logs
+docker-compose logs -f app1
+
+# Monitor Redis operations
+docker exec -it pulsecart-redis redis-cli MONITOR
+
+# RabbitMQ management
+open http://localhost:15672
+```
+
+#### Business Metrics
+- **Stock Levels:** Verify no overselling occurs
+- **Order Success Rate:** Percentage of successful purchases
+- **Queue Backlog:** Async message processing status
 
 ## Monitoring
 

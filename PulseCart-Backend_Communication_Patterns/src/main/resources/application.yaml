@@ -68,3 +68,16 @@ management:
     web:
       exposure:
         include: health,info,metrics,prometheus
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://postgres:5432/ecommerce
+  data:
+    redis:
+      host: redis
+  rabbitmq:
+    host: rabbitmq

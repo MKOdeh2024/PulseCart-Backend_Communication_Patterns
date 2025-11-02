@@ -13,7 +13,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>flash-sale-backend</name>
   <description>E-Commerce Flash Sale System</description>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
   <url/>
   <licenses>
     <license/>
@@ -32,9 +32,6 @@
     <spring-ai.version>1.0.3</spring-ai.version>
     <spring-cloud.version>2025.0.0</spring-cloud.version>
   </properties>
-  <modules>
-    <module>PulseCart-Backend_Communication_Patterns</module>
-  </modules>
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
